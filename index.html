@@ -1,282 +1,174 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <link rel="stylesheet" href="logo.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário 2025 -  Boi Bumba Garanhão</title>
+    <title>Calendário Boi Garahão 2025</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #fff;
+            color: #000;
+            text-align: center;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        .calendar-container {
-            max-width: 100%;
-            width: 100%;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
         }
         header {
+            background-color: #19b319;
+            color: #fff;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
-        h1 {
-            margin: 0;
-        }
-        .carousel {
+
+        .controls {
+            margin: 20px;
             display: flex;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            gap: 10px;
-            flex-wrap: nowrap;
-        }
-        .month {
-            min-width: 100%;
-            box-sizing: border-box;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-        }
-        .days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 5px;
-        }
-        .day {
-            padding: 10px;
-            text-align: center;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .day.event {
-            background-color: #4CAF50;
-            color: white;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         button {
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007BFF;
-            color: white;
+            background-color: #008000;
+            color: #fff;
             border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
             border-radius: 5px;
+            transition: transform 0.2s;
         }
-        .event-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        button:hover {
+            transform: scale(1.1);
+        }
+        #calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             padding: 20px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
         }
-        .event-popup label {
-            display: block;
-            margin-bottom: 5px;
+        .month {
+            border: 2px solid #000;
+            padding: 10px;
+            background-color: #fff;
+            text-align: left;
+            position: relative;
+        }
+        .month h3 {
+            text-align: center;
+            background-color: #000;
+            color: #fff;
+            padding: 5px;
+        }
+        .weekdays, .days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            gap: 2px;
+        }
+        .weekdays div {
+            background-color: #eee;
+            padding: 5px;
             font-weight: bold;
         }
-        .event-popup input[type="date"], 
-        .event-popup input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border 0.3s ease, box-shadow 0.3s ease;
-        }
-        .event-popup input[type="text"]:focus, 
-        .event-popup input[type="date"]:focus {
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            outline: none;
-        }
-        .event-popup textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 14px;
-            resize: vertical;
-            height: 100px;
-            transition: border 0.3s ease, box-shadow 0.3s ease;
-        }
-        .event-popup textarea:focus {
-            border-color: #007BFF;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            outline: none;
-        }
-        .event-card {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        .event-card h3 {
-            margin-top: 0;
-        }
-        .event-card p {
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .event-card button {
-            margin-top: 15px;
+        .days div {
             padding: 10px;
-            background-color: #FF5733;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid #000;
+            min-height: 40px;
             cursor: pointer;
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        @media (max-width: 768px) {
-            .carousel {
-                flex-wrap: wrap;
-                justify-content: space-between;
-            }
-            .month {
-                min-width: calc(50% - 10px);
-            }
-        }
-        @media (max-width: 480px) {
-            .month {
-                min-width: 100%;
-            }
-            .days {
-                grid-template-columns: repeat(7, 1fr);
-            }
-            button {
-                width: 100%;
-            }
+        .event {
+            background-color: #008000;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="calendar-container">
-        <header>
-            <h1>Calendário 2025 </h1>
-            <div> <!-- Espaço para logo --> <img src="aa.png" alt=""></div>
-        </header>
-        <button onclick="openEventForm()">Adicionar Evento</button>
-        <div class="carousel">
-            <!-- Meses de março a agosto de 2025 -->
-            <div class="month" id="marco"></div>
-            <div class="month" id="abril"></div>
-            <div class="month" id="maio"></div>
-            <div class="month" id="junho"></div>
-            <div class="month" id="julho"></div>
-            <div class="month" id="agosto"></div>
+    <header>
+        <h1>Calendário Boi Garahão 2025</h1>
+        <div class="logo" > <img src="aa.png" width="80px" alt=""> </div>
+    </header>
+    <main>
+        <div class="controls">
+            <button id="add-event">Adicionar Evento</button>
+            <button id="delete-event">Excluir Evento</button>
         </div>
-    </div>
-
-    <div class="event-popup" id="eventPopup">
-        <h2>Adicionar Evento</h2>
-        <label>Data:</label>
-        <input type="date" id="eventDate">
-        <label>Descrição:</label>
-        <textarea id="eventDescription"></textarea>
-        <button onclick="saveEvent()">Salvar</button>
-        <button onclick="closeEventForm()">Cancelar</button>
-    </div>
-
-    <div class="event-card" id="eventCard">
-        <h3 id="eventCardTitle"></h3>
-        <p id="eventCardDescription"></p>
-        <button onclick="closeEventCard()">Fechar</button>
-    </div>
-
+        <div id="calendar-container"></div>
+    </main>
     <script>
-        const months = ['marco', 'abril', 'maio', 'junho', 'julho', 'agosto'];
-        const monthDays = [31, 30, 31, 30, 31, 31];
-        const monthNames = ['Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto'];
-        const events = {};
+        const events = JSON.parse(localStorage.getItem("events")) || {};
 
-        months.forEach((month, index) => {
-            const monthDiv = document.getElementById(month);
-            monthDiv.innerHTML = `<h2>${monthNames[index]} 2025</h2>`;
-            const daysDiv = document.createElement('div');
-            daysDiv.classList.add('days');
+        document.addEventListener("DOMContentLoaded", () => {
+            const months = ["Março", "Abril", "Maio", "Junho", "Julho", "Agosto"];
+            const calendarContainer = document.getElementById("calendar-container");
+            
+            months.forEach((month, index) => {
+                const monthDiv = document.createElement("div");
+                monthDiv.classList.add("month");
+                monthDiv.innerHTML = `
+                    <h3>${month}</h3>
+                    <div class="weekdays">
+                        <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
+                    </div>
+                    <div class="days" data-month="${index + 3}"></div>
+                    <button class="legend-button" data-month="${index + 3}">Legenda</button>
+                `;
+                calendarContainer.appendChild(monthDiv);
 
-            for (let day = 1; day <= monthDays[index]; day++) {
-                const dayDiv = document.createElement('div');
-                dayDiv.classList.add('day');
-                dayDiv.innerText = day;
-                dayDiv.onclick = () => showEvent(month, day);
-                daysDiv.appendChild(dayDiv);
-            }
-            monthDiv.appendChild(daysDiv);
+                const daysDiv = monthDiv.querySelector(".days");
+                for (let i = 1; i <= 31; i++) {
+                    const dayDiv = document.createElement("div");
+                    dayDiv.textContent = i;
+                    dayDiv.dataset.date = `${index + 3}-${i}`;
+                    if (events[dayDiv.dataset.date]) {
+                        dayDiv.classList.add("event");
+                    }
+                    dayDiv.addEventListener("click", () => addEvent(dayDiv.dataset.date));
+                    daysDiv.appendChild(dayDiv);
+                }
+            });
+
+            document.querySelectorAll(".legend-button").forEach(button => {
+                button.addEventListener("click", () => {
+                    const month = button.dataset.month;
+                    let message = `Legenda de eventos para ${months[month - 3]}:\n`;
+                    for (const [date, desc] of Object.entries(events)) {
+                        if (date.startsWith(month + "-")) {
+                            message += `${date.split("-")[1]}: ${desc}\n`;
+                        }
+                    }
+                    alert(message || "Nenhum evento cadastrado para este mês.");
+                });
+            });
         });
 
-        function openEventForm() {
-            document.getElementById('eventPopup').style.display = 'block';
-        }
-
-        function closeEventForm() {
-            document.getElementById('eventPopup').style.display = 'none';
-        }
-
-        function saveEvent() {
-            const date = new Date(document.getElementById('eventDate').value);
-            const description = document.getElementById('eventDescription').value;
-            if (!date || !description) return;
-
-            const month = months[date.getMonth() - 2];
-            const day = date.getDate();
-
-            if (!events[month]) events[month] = {};
-            events[month][day] = description;
-
-            const monthDiv = document.getElementById(month);
-            const dayDiv = monthDiv.querySelector(`.day:nth-child(${day})`);
-            if (dayDiv) dayDiv.classList.add('event');
-
-            closeEventForm();
-        }
-
-        function showEvent(month, day) {
-            if (events[month] && events[month][day]) {
-                const eventTitle = `Evento em ${day} de ${monthNames[months.indexOf(month)]}`;
-                const eventDescription = events[month][day];
-
-                document.getElementById('eventCardTitle').innerText = eventTitle;
-                document.getElementById('eventCardDescription').innerText = eventDescription;
-
-                document.getElementById('eventCard').style.display = 'block';
+        function addEvent(date) {
+            const description = prompt("Descrição do evento:");
+            if (description) {
+                events[date] = description;
+                localStorage.setItem("events", JSON.stringify(events));
+                location.reload();
             }
         }
 
-        function closeEventCard() {
-            document.getElementById('eventCard').style.display = 'none';
-        }
+        document.getElementById("add-event").addEventListener("click", () => {
+            const date = prompt("Digite a data do evento (M-D, ex: 3-15 para 15 de Março):");
+            if (date) {
+                addEvent(date);
+            }
+        });
+
+        document.getElementById("delete-event").addEventListener("click", () => {
+            const date = prompt("Digite a data do evento a excluir (M-D, ex: 3-15 para 15 de Março):");
+            if (events[date]) {
+                delete events[date];
+                localStorage.setItem("events", JSON.stringify(events));
+                location.reload();
+            } else {
+                alert("Nenhum evento encontrado nesta data.");
+            }
+        });
     </script>
 </body>
 </html>
